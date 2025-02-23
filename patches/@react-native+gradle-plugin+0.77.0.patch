@@ -1,0 +1,118 @@
+diff --git a/node_modules/@react-native/gradle-plugin/.gradle/buildOutputCleanup/buildOutputCleanup.lock b/node_modules/@react-native/gradle-plugin/.gradle/buildOutputCleanup/buildOutputCleanup.lock
+new file mode 100644
+index 0000000..d5151e3
+Binary files /dev/null and b/node_modules/@react-native/gradle-plugin/.gradle/buildOutputCleanup/buildOutputCleanup.lock differ
+diff --git a/node_modules/@react-native/gradle-plugin/.gradle/buildOutputCleanup/cache.properties b/node_modules/@react-native/gradle-plugin/.gradle/buildOutputCleanup/cache.properties
+new file mode 100644
+index 0000000..c679f9f
+--- /dev/null
++++ b/node_modules/@react-native/gradle-plugin/.gradle/buildOutputCleanup/cache.properties
+@@ -0,0 +1,2 @@
++#Sun Feb 23 15:45:46 MST 2025
++gradle.version=7.6
+diff --git a/node_modules/@react-native/gradle-plugin/.gradle/buildOutputCleanup/outputFiles.bin b/node_modules/@react-native/gradle-plugin/.gradle/buildOutputCleanup/outputFiles.bin
+new file mode 100644
+index 0000000..3c2219d
+Binary files /dev/null and b/node_modules/@react-native/gradle-plugin/.gradle/buildOutputCleanup/outputFiles.bin differ
+diff --git a/node_modules/@react-native/gradle-plugin/react-native-gradle-plugin/build.gradle.kts b/node_modules/@react-native/gradle-plugin/react-native-gradle-plugin/build.gradle.kts
+index 022f60c..97cca67 100644
+--- a/node_modules/@react-native/gradle-plugin/react-native-gradle-plugin/build.gradle.kts
++++ b/node_modules/@react-native/gradle-plugin/react-native-gradle-plugin/build.gradle.kts
+@@ -64,10 +64,9 @@ kotlin { jvmToolchain(17) }
+ tasks.withType<KotlinCompile>().configureEach {
+   compilerOptions {
+     apiVersion.set(KotlinVersion.KOTLIN_1_7)
+-    // See comment above on JDK 11 support
+     jvmTarget.set(JvmTarget.JVM_11)
+-    allWarningsAsErrors =
+-        project.properties["enableWarningsAsErrors"]?.toString()?.toBoolean() ?: false
++    var allWarningsAsErrors = project.objects.property(Boolean::class.java)
++    allWarningsAsErrors.set(project.properties["enableWarningsAsErrors"]?.toString()?.toBoolean() ?: false)
+   }
+ }
+ 
+diff --git a/node_modules/@react-native/gradle-plugin/settings-plugin/build.gradle.kts b/node_modules/@react-native/gradle-plugin/settings-plugin/build.gradle.kts
+index 8f5ae86..c6c3080 100644
+--- a/node_modules/@react-native/gradle-plugin/settings-plugin/build.gradle.kts
++++ b/node_modules/@react-native/gradle-plugin/settings-plugin/build.gradle.kts
+@@ -54,10 +54,9 @@ kotlin { jvmToolchain(17) }
+ tasks.withType<KotlinCompile>().configureEach {
+   compilerOptions {
+     apiVersion.set(KotlinVersion.KOTLIN_1_7)
+-    // See comment above on JDK 11 support
+     jvmTarget.set(JvmTarget.JVM_11)
+-    allWarningsAsErrors =
+-        project.properties["enableWarningsAsErrors"]?.toString()?.toBoolean() ?: false
++    var allWarningsAsErrors = project.objects.property(Boolean::class.java)
++    allWarningsAsErrors.set(project.properties["enableWarningsAsErrors"]?.toString()?.toBoolean() ?: false)
+   }
+ }
+ 
+diff --git a/node_modules/@react-native/gradle-plugin/shared-testutil/build.gradle.kts b/node_modules/@react-native/gradle-plugin/shared-testutil/build.gradle.kts
+index b3c0204..bf66436 100644
+--- a/node_modules/@react-native/gradle-plugin/shared-testutil/build.gradle.kts
++++ b/node_modules/@react-native/gradle-plugin/shared-testutil/build.gradle.kts
+@@ -18,25 +18,14 @@ group = "com.facebook.react"
+ 
+ dependencies { implementation(libs.junit) }
+ 
+-java { targetCompatibility = JavaVersion.VERSION_11 }
+-
++// java { targetCompatibility = JavaVersion.VERSION_11 }
+ kotlin { jvmToolchain(17) }
+ 
+ tasks.withType<KotlinCompile>().configureEach {
+   compilerOptions {
+     apiVersion.set(KotlinVersion.KOTLIN_1_7)
+-    // See comment above on JDK 11 support
+-    jvmTarget.set(JvmTarget.JVM_11)
+-    allWarningsAsErrors =
+-        project.properties["enableWarningsAsErrors"]?.toString()?.toBoolean() ?: false
+-  }
+-}
+-
+-tasks.withType<Test>().configureEach {
+-  testLogging {
+-    exceptionFormat = TestExceptionFormat.FULL
+-    showExceptions = true
+-    showCauses = true
+-    showStackTraces = true
++    // jvmTarget.set(JvmTarget.JVM_11) // Commented out to avoid conflict
++    var allWarningsAsErrors = project.objects.property(Boolean::class.java)
++    allWarningsAsErrors.set(project.properties["enableWarningsAsErrors"]?.toString()?.toBoolean() ?: false)
+   }
+ }
+diff --git a/node_modules/@react-native/gradle-plugin/shared/build.gradle.kts b/node_modules/@react-native/gradle-plugin/shared/build.gradle.kts
+index b705a7c..2f20f08 100644
+--- a/node_modules/@react-native/gradle-plugin/shared/build.gradle.kts
++++ b/node_modules/@react-native/gradle-plugin/shared/build.gradle.kts
+@@ -24,25 +24,14 @@ dependencies {
+   testImplementation(project(":shared-testutil"))
+ }
+ 
+-java { targetCompatibility = JavaVersion.VERSION_11 }
+-
++// java { targetCompatibility = JavaVersion.VERSION_17 }
+ kotlin { jvmToolchain(17) }
+ 
+ tasks.withType<KotlinCompile>().configureEach {
+   compilerOptions {
+     apiVersion.set(KotlinVersion.KOTLIN_1_7)
+-    // See comment above on JDK 11 support
+-    jvmTarget.set(JvmTarget.JVM_11)
+-    allWarningsAsErrors =
+-        project.properties["enableWarningsAsErrors"]?.toString()?.toBoolean() ?: false
+-  }
+-}
+-
+-tasks.withType<Test>().configureEach {
+-  testLogging {
+-    exceptionFormat = TestExceptionFormat.FULL
+-    showExceptions = true
+-    showCauses = true
+-    showStackTraces = true
++    // jvmTarget.set(JvmTarget.JVM_17) // Commented out to avoid conflict
++    var allWarningsAsErrors = project.objects.property(Boolean::class.java)
++    allWarningsAsErrors.set(project.properties["enableWarningsAsErrors"]?.toString()?.toBoolean() ?: false)
+   }
+ }
