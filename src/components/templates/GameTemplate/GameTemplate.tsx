@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, SafeAreaView, ViewStyle } from 'react-native';
+import { THEME_COLORS } from '../../../constants/colors';
 
 interface GameTemplateProps {
   children: React.ReactNode;
@@ -19,7 +20,7 @@ const GameTemplate: React.FC<GameTemplateProps> = ({ children, style }) => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: THEME_COLORS.background,
   },
   container: {
     flex: 1,
