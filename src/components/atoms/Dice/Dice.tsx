@@ -72,7 +72,7 @@ const Dice: React.FC<DiceProps> = ({ value, size = 120, style, isRolling }) => {
             }
           ]}
         >
-          {category?.toUpperCase()}
+          {category?.toUpperCase() || 'TAP'}
         </Text>
       </View>
     );

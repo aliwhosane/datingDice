@@ -44,9 +44,6 @@ const GameScreenOrganism: React.FC<{ style?: React.CSSProperties; onDiceTap: () 
   return (
     <View style={[styles.container, style as any]}>
       <View style={styles.content}>
-        <View style={styles.diceSection}>
-          <DiceRoller onRoll={handleRoll} value={diceValue} />
-        </View>
         <View style={styles.questionSection}>
           {isLoading ? (
             <LoadingIndicator />
@@ -59,6 +56,9 @@ const GameScreenOrganism: React.FC<{ style?: React.CSSProperties; onDiceTap: () 
               style={styles.questionCard}
             />
           )}
+        </View>
+        <View style={styles.diceSection}>
+          <DiceRoller onRoll={handleRoll} value={diceValue} />
         </View>
       </View>
     </View>
