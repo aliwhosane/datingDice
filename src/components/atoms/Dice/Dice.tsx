@@ -59,7 +59,7 @@ const Dice: React.FC<DiceProps> = ({ value, size = 120, style, isRolling }) => {
     const categoryKeys = Object.keys(CATEGORIES);
     const categoryIndex = (value - 1) % categoryKeys.length;
     const category = categoryKeys[categoryIndex];
-    const categoryColor = CATEGORY_COLORS[category.toLowerCase() as keyof typeof CATEGORY_COLORS];
+    const categoryColor = CATEGORY_COLORS[category?.toLowerCase() as keyof typeof CATEGORY_COLORS];
 
     return (
       <View style={styles.contentContainer}>

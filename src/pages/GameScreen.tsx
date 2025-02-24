@@ -1,8 +1,8 @@
-import React from 'react';
-import { StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import GameTemplate from '../components/templates/GameTemplate/GameTemplate';
-import GameScreenOrganism from '../components/organisms/GameScreen/GameScreen';
+import Game from '../components/organisms/Game/Game';
 import { THEME_COLORS } from '../constants/colors';
 import { useLayoutEffect } from 'react';
 
@@ -16,6 +16,8 @@ interface GameScreenProps {
 }
 
 const GameScreen: React.FC<GameScreenProps> = ({ navigation }) => {
+  const [hasRolled, setHasRolled] = useState(false);
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: false,
@@ -25,9 +27,19 @@ const GameScreen: React.FC<GameScreenProps> = ({ navigation }) => {
     });
   }, [navigation]);
 
+  const handleDiceTap = () => {
+    if (!hasRolled) {
+      setHasRolled(true);
+    }
+    // Add any additional logic for dice tap here
+  };
+
   return (
     <GameTemplate style={styles.container}>
-      <GameScreenOrganism style={styles.content} />
+      {!hasRolled && (
+        <Text style={styles.rollMessage}>Tap the dice to start playing!</Text>
+      )}
+      <Game style={styles.content} onDiceTap={handleDiceTap} />
     </GameTemplate>
   );
 };
@@ -41,6 +53,15 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 16,
     paddingVertical: 20,
+  },
+  rollMessage: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: [{ translateX: -50 }, { translateY: -50 }],
+    fontSize: 18,
+    color: THEME_COLORS.text,
+    textAlign: 'center',
   },
 });
 

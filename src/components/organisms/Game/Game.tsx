@@ -7,7 +7,7 @@ import { getRandomQuestion, QuestionError } from '../../../utils/getRandomQuesti
 import { CATEGORIES } from '../../../constants/categories';
 import { THEME_COLORS } from '../../../constants/colors';
 
-const GameScreen: React.FC<{ style?: React.CSSProperties }> = ({ style }) => {
+const GameScreenOrganism: React.FC<{ style?: React.CSSProperties; onDiceTap: () => void }> = ({ style, onDiceTap }) => {
   const [diceValue, setDiceValue] = useState<number>(0);
   const [currentQuestion, setCurrentQuestion] = useState<{ text: string; category: string } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -36,6 +36,9 @@ const GameScreen: React.FC<{ style?: React.CSSProperties }> = ({ style }) => {
         setIsLoading(false);
       }
     }, 1000);
+
+    // Call the onDiceTap function when the dice is rolled
+    onDiceTap();
   };
 
   return (
@@ -98,4 +101,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default GameScreen;
+export default GameScreenOrganism;

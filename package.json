@@ -5,6 +5,10 @@
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
+    "ios:clean": "cd ios && rm -rf build/ && xcodebuild clean && pod install && cd ..",
+    "ios:dev": "react-native run-ios --simulator=\"iPhone 16 Pro\"",
+    "ios:reset": "cd ios && pod deintegrate && pod cache clean --all && rm -rf build/ && pod install && cd ..",
+    "ios:xcode": "cd ios && xed .",
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest",
