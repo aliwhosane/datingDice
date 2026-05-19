@@ -102,18 +102,29 @@ const Dice: React.FC<DiceProps> = ({ value, size = 120, style, isRolling }) => {
       ? CATEGORY_COLORS[category.toLowerCase() as keyof typeof CATEGORY_COLORS] 
       : '#E8809A'; // Primary Rose Accent for "TAP"
 
+    const text = category?.toUpperCase() || 'ROLL';
+    const baseFontSize = size * 0.11;
+    // Prevent wrapping of long text by adjusting font size dynamically based on length
+    const dynamicFontSize = text.length > 8 
+      ? baseFontSize * (8 / text.length) 
+      : baseFontSize;
+
     return (
       <View style={styles.contentContainer}>
         <Text 
+          numberOfLines={1}
+          adjustsFontSizeToFit
+          minimumFontScale={0.5}
           style={[
             styles.categoryText,
             { 
-              fontSize: size * 0.11,
+              fontSize: dynamicFontSize,
               color: categoryColor,
+              width: '100%',
             }
           ]}
         >
-          {category?.toUpperCase() || 'ROLL'}
+          {text}
         </Text>
         {!category && (
           <Text style={[styles.tapLabel, { color: categoryColor }]}>
