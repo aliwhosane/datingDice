@@ -12,39 +12,78 @@ interface DiceProps {
 
 const Dice: React.FC<DiceProps> = ({ value, size = 120, style, isRolling }) => {
   const spinValue = useRef(new Animated.Value(0)).current;
-  const scaleValue = useRef(new Animated.Value(1)).current;
+  const scaleXValue = useRef(new Animated.Value(1)).current;
+  const scaleYValue = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
     if (isRolling) {
       spinValue.setValue(0);
-      scaleValue.setValue(1);
+      scaleXValue.setValue(1);
+      scaleYValue.setValue(1);
       
       Animated.parallel([
+        // scaleX Squish and Stretch
         Animated.sequence([
-          Animated.timing(scaleValue, {
-            toValue: 0.8,
-            duration: 200,
+          Animated.timing(scaleXValue, {
+            toValue: 1.25, // Squash (wider)
+            duration: 150,
             useNativeDriver: true,
             easing: Easing.ease,
           }),
-          Animated.timing(scaleValue, {
-            toValue: 1.2,
-            duration: 400,
-            useNativeDriver: true,
-            easing: Easing.bounce,
-          }),
-          Animated.timing(scaleValue, {
-            toValue: 1,
+          Animated.timing(scaleXValue, {
+            toValue: 0.8, // Stretch (thinner in air)
             duration: 200,
             useNativeDriver: true,
-            easing: Easing.bounce,
+            easing: Easing.out(Easing.quad),
+          }),
+          Animated.timing(scaleXValue, {
+            toValue: 1.1, // Wobble
+            duration: 200,
+            useNativeDriver: true,
+            easing: Easing.linear,
+          }),
+          Animated.spring(scaleXValue, {
+            toValue: 1, // Soft landing rebound
+            friction: 4,
+            tension: 80,
+            useNativeDriver: true,
           }),
         ]),
+
+        // scaleY Squish and Stretch
+        Animated.sequence([
+          Animated.timing(scaleYValue, {
+            toValue: 0.7, // Squash (flatter)
+            duration: 150,
+            useNativeDriver: true,
+            easing: Easing.ease,
+          }),
+          Animated.timing(scaleYValue, {
+            toValue: 1.3, // Stretch (elongated in air)
+            duration: 200,
+            useNativeDriver: true,
+            easing: Easing.out(Easing.quad),
+          }),
+          Animated.timing(scaleYValue, {
+            toValue: 0.95, // Wobble
+            duration: 200,
+            useNativeDriver: true,
+            easing: Easing.linear,
+          }),
+          Animated.spring(scaleYValue, {
+            toValue: 1, // Soft landing rebound
+            friction: 4,
+            tension: 80,
+            useNativeDriver: true,
+          }),
+        ]),
+
+        // Spin
         Animated.timing(spinValue, {
           toValue: 4,
-          duration: 800,
+          duration: 750,
           useNativeDriver: true,
-          easing: Easing.out(Easing.cubic),
+          easing: Easing.out(Easing.back(1.5)), // Bouncy wind-down
         }),
       ]).start();
     }
@@ -59,7 +98,9 @@ const Dice: React.FC<DiceProps> = ({ value, size = 120, style, isRolling }) => {
     const categoryKeys = Object.keys(CATEGORIES);
     const categoryIndex = (value - 1) % categoryKeys.length;
     const category = categoryKeys[categoryIndex];
-    const categoryColor = CATEGORY_COLORS[category?.toLowerCase() as keyof typeof CATEGORY_COLORS];
+    const categoryColor = category 
+      ? CATEGORY_COLORS[category.toLowerCase() as keyof typeof CATEGORY_COLORS] 
+      : '#E8809A'; // Primary Rose Accent for "TAP"
 
     return (
       <View style={styles.contentContainer}>
@@ -67,13 +108,18 @@ const Dice: React.FC<DiceProps> = ({ value, size = 120, style, isRolling }) => {
           style={[
             styles.categoryText,
             { 
-              fontSize: size * 0.10,
+              fontSize: size * 0.11,
               color: categoryColor,
             }
           ]}
         >
-          {category?.toUpperCase() || 'TAP'}
+          {category?.toUpperCase() || 'ROLL'}
         </Text>
+        {!category && (
+          <Text style={[styles.tapLabel, { color: categoryColor }]}>
+            🎲
+          </Text>
+        )}
       </View>
     );
   };
@@ -87,7 +133,8 @@ const Dice: React.FC<DiceProps> = ({ value, size = 120, style, isRolling }) => {
           height: size,
           transform: [
             { rotate: spin },
-            { scale: scaleValue },
+            { scaleX: scaleXValue },
+            { scaleY: scaleYValue },
           ],
         },
         style,
@@ -100,15 +147,17 @@ const Dice: React.FC<DiceProps> = ({ value, size = 120, style, isRolling }) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'white',
-    borderRadius: 12,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 28, // Rounded Material-You card shape
     justifyContent: 'center',
     alignItems: 'center',
-    elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    elevation: 8,
+    shadowColor: '#1A111E',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.22,
+    shadowRadius: 12,
+    borderWidth: 4,
+    borderColor: '#F3E9F8',
   },
   contentContainer: {
     flex: 1,
@@ -119,7 +168,11 @@ const styles = StyleSheet.create({
   categoryText: {
     fontWeight: '900',
     textAlign: 'center',
-    letterSpacing: 1,
+    letterSpacing: 1.5,
+  },
+  tapLabel: {
+    fontSize: 22,
+    marginTop: 6,
   },
 });
 

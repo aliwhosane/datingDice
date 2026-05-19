@@ -1,7 +1,7 @@
-import React from 'react';
-import { View, Text, StyleSheet, ViewStyle, Dimensions } from 'react-native';
+import React, { useRef, useEffect } from 'react';
+import { View, Text, StyleSheet, ViewStyle, Dimensions, Animated, Easing } from 'react-native';
 import Card from '../../atoms/Card/Card';
-import { CATEGORY_COLORS, THEME_COLORS } from '../../../constants/colors';
+import { CATEGORY_COLORS } from '../../../constants/colors';
 
 interface QuestionDisplayProps {
   question: string | null;
@@ -10,79 +10,116 @@ interface QuestionDisplayProps {
 }
 
 const QuestionDisplay: React.FC<QuestionDisplayProps> = ({ question, category, style }) => {
+  const animatedValue = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    if (question) {
+      animatedValue.setValue(0);
+      Animated.timing(animatedValue, {
+        toValue: 1,
+        duration: 500,
+        easing: Easing.out(Easing.back(1.2)),
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [question]);
+
   if (!question) return null;
 
   const backgroundColor = category ? CATEGORY_COLORS[category.toLowerCase() as keyof typeof CATEGORY_COLORS] : '#FFFFFF';
 
+  const translateY = animatedValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: [40, 0],
+  });
+
+  const scale = animatedValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0.94, 1],
+  });
+
+  const opacity = animatedValue.interpolate({
+    inputRange: [0, 0.4, 1],
+    outputRange: [0, 0.7, 1],
+  });
+
   return (
-    <Card style={{ ...styles.container, backgroundColor, ...style }}>
-      {category && (
-        <View style={styles.categoryContainer}>
-          <Text style={styles.categoryText}>
-            {category.toUpperCase()}
+    <Animated.View
+      style={[
+        styles.animatedContainer,
+        {
+          opacity,
+          transform: [{ translateY }, { scale }],
+        }
+      ]}
+    >
+      <Card style={{ ...styles.container, backgroundColor, ...style }}>
+        {category && (
+          <View style={styles.categoryPill}>
+            <Text style={styles.categoryText}>
+              {category.toUpperCase()}
+            </Text>
+          </View>
+        )}
+        <View style={styles.content}>
+          <Text style={styles.questionText}>
+            {question}
           </Text>
-          <View style={styles.categoryUnderline} />
         </View>
-      )}
-      <View style={styles.content}>
-        <Text style={styles.questionText}>
-          {question}
-        </Text>
-      </View>
-    </Card>
+      </Card>
+    </Animated.View>
   );
 };
 
 const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: THEME_COLORS.surface,
-    width: width * 0.9,
-    height: height * 0.4,
-    alignSelf: 'center',
-    borderRadius: 20,
-    elevation: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    marginVertical: 20,
-  },
-  categoryContainer: {
-    paddingHorizontal: 20,
-    paddingTop: 16,
-    paddingBottom: 8,
+  animatedContainer: {
+    width: '100%',
     alignItems: 'center',
+    justifyContent: 'center',
   },
-  categoryText: {
-    fontSize: 18,
-    fontWeight: '800',
-    color: '#303030',
-    letterSpacing: 2,
+  container: {
+    width: width * 0.88,
+    height: height * 0.38,
+    alignSelf: 'center',
+    borderRadius: 36, // Rounded Material You expressive shape
+    elevation: 8,
+    shadowColor: '#1A111E',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.18,
+    shadowRadius: 16,
+    marginVertical: 15,
+    padding: 24,
+  },
+  categoryPill: {
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+    borderRadius: 20,
+    backgroundColor: 'rgba(0, 0, 0, 0.07)', // Soft dark transparent overlay
+    alignSelf: 'center',
+    marginTop: 8,
     marginBottom: 8,
   },
-  categoryUnderline: {
-    width: 40,
-    height: 3,
-    backgroundColor: 'rgba(255,255,255,0.6)',
-    borderRadius: 2,
+  categoryText: {
+    fontSize: 13,
+    fontWeight: '900',
+    color: 'rgba(26, 17, 30, 0.7)', // High contrast aubergine color with opacity
+    letterSpacing: 2,
+    textAlign: 'center',
   },
   content: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 24,
+    paddingHorizontal: 12,
   },
   questionText: {
-    color: THEME_COLORS.text,
-    fontSize: 24,
+    color: '#1A111E', // Dark aubergine text for perfect contrast on soft pastel cards
+    fontSize: 23,
     textAlign: 'center',
     lineHeight: 32,
-    fontWeight: '600',
-    textShadowColor: 'rgba(0,0,0,0.2)',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 3,
+    fontWeight: '700',
   },
 });
 

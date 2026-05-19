@@ -18,18 +18,18 @@ const Card: React.FC<CardProps> = ({ children, style }) => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: THEME_COLORS.surface,
-    borderRadius: 8,
-    padding: 16,
-    marginVertical: 8,
-    marginHorizontal: 16,
-    elevation: 4,
+    borderRadius: 32, // More organic rounded corners
+    padding: 24,
+    marginVertical: 12,
+    marginHorizontal: 20,
+    elevation: 8,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 10,
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    shadowOpacity: 0.15, // Softer shadow opacity
+    shadowRadius: 16, // Deeper blur radius
   },
 });
 
