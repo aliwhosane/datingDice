@@ -16,7 +16,7 @@ const DiceRoller: React.FC<DiceRollerProps> = ({ onRoll, value, style }) => {
     if (!isRolling) {
       setIsRolling(true);
       const newValue = rollDice(6);
-      
+
       setTimeout(() => {
         onRoll(newValue);
         setTimeout(() => {

@@ -9,7 +9,7 @@ interface ButtonProps {
   hasIcon?: boolean;
 }
 
-const Button: React.FC<ButtonProps> = ({ onPress, title, disabled, hasIcon }) => {
+const Button: React.FC<ButtonProps> = ({ onPress, title, disabled }) => {
   const scaleValue = React.useRef(new Animated.Value(1)).current;
 
   const handlePressIn = () => {

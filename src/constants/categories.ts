@@ -4,5 +4,5 @@ export const CATEGORIES = {
   FUNNY: 'FUNNY',
   ROMANTIC: 'ROMANTIC',
   WILD: 'WILD',
-  FUTURE: 'FUTURE'
+  FUTURE: 'FUTURE',
 } as const;

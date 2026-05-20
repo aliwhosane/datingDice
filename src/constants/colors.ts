@@ -4,7 +4,7 @@ export const CATEGORY_COLORS = {
   icebreaker: '#F3C68F', // Warm Apricot/Peach - inviting and casual
   future: '#8ED3C4',     // Minty Sage - calm and forward-looking
   funny: '#F9E076',      // Bright Honey/Butter - happy and fun
-  romantic: '#E8809A'    // Blush Velvet Rose - warm and romantic
+  romantic: '#E8809A',    // Blush Velvet Rose - warm and romantic
 };
 
 export const THEME_COLORS = {
@@ -12,5 +12,5 @@ export const THEME_COLORS = {
   surface: '#261A2C',         // Soft Purple-Amethyst
   text: '#F3E9F8',            // Warm off-white
   textSecondary: '#A392A7',   // Muted Lavender-Grey
-  error: '#FF758F'            // Soft Coral Red
+  error: '#FF758F',            // Soft Coral Red
 };

@@ -20,7 +20,7 @@ const Dice: React.FC<DiceProps> = ({ value, size = 120, style, isRolling }) => {
       spinValue.setValue(0);
       scaleXValue.setValue(1);
       scaleYValue.setValue(1);
-      
+
       Animated.parallel([
         // scaleX Squish and Stretch
         Animated.sequence([
@@ -87,7 +87,7 @@ const Dice: React.FC<DiceProps> = ({ value, size = 120, style, isRolling }) => {
         }),
       ]).start();
     }
-  }, [isRolling]);
+  }, [isRolling, scaleXValue, scaleYValue, spinValue]);
 
   const spin = spinValue.interpolate({
     inputRange: [0, 4],
@@ -98,30 +98,30 @@ const Dice: React.FC<DiceProps> = ({ value, size = 120, style, isRolling }) => {
     const categoryKeys = Object.keys(CATEGORIES);
     const categoryIndex = (value - 1) % categoryKeys.length;
     const category = categoryKeys[categoryIndex];
-    const categoryColor = category 
-      ? CATEGORY_COLORS[category.toLowerCase() as keyof typeof CATEGORY_COLORS] 
+    const categoryColor = category
+      ? CATEGORY_COLORS[category.toLowerCase() as keyof typeof CATEGORY_COLORS]
       : '#E8809A'; // Primary Rose Accent for "TAP"
 
     const text = category?.toUpperCase() || 'ROLL';
     const baseFontSize = size * 0.11;
     // Prevent wrapping of long text by adjusting font size dynamically based on length
-    const dynamicFontSize = text.length > 8 
-      ? baseFontSize * (8 / text.length) 
+    const dynamicFontSize = text.length > 8
+      ? baseFontSize * (8 / text.length)
       : baseFontSize;
 
     return (
       <View style={styles.contentContainer}>
-        <Text 
+        <Text
           numberOfLines={1}
           adjustsFontSizeToFit
           minimumFontScale={0.5}
           style={[
             styles.categoryText,
-            { 
+            {
               fontSize: dynamicFontSize,
               color: categoryColor,
               width: '100%',
-            }
+            },
           ]}
         >
           {text}

@@ -9,7 +9,7 @@ export const theme = {
       primary: '#000000',
       secondary: '#666666',
       disabled: '#999999',
-    }
+    },
   },
   spacing: {
     small: 8,
@@ -28,11 +28,11 @@ export const theme = {
       regular: '400',
       medium: '500',
       bold: '700',
-    }
+    },
   },
   borderRadius: {
     small: 4,
     medium: 8,
     large: 12,
-  }
+  },
 };

@@ -17,7 +17,7 @@ export const getRandomQuestion = (diceRoll: number) => {
     const categoryKeys = Object.keys(CATEGORIES);
     const categoryIndex = (diceRoll - 1) % categoryKeys.length;
     const category = categoryKeys[categoryIndex];
-    
+
     const questions = QUESTIONS[category as keyof typeof QUESTIONS];
     if (!questions || questions.length === 0) {
       throw new QuestionError(`No questions available for category: ${category}`);

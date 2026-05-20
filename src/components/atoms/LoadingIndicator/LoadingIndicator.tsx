@@ -7,10 +7,10 @@ interface LoadingIndicatorProps {
   style?: ViewStyle;
 }
 
-const LoadingIndicator: React.FC<LoadingIndicatorProps> = ({ 
-  size = 'large', 
+const LoadingIndicator: React.FC<LoadingIndicatorProps> = ({
+  size = 'large',
   color = '#007AFF',
-  style 
+  style,
 }) => {
   return (
     <View style={[styles.container, style]}>

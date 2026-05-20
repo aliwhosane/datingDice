@@ -1,13 +1,18 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet, Text, ViewStyle } from 'react-native';
 import DiceRoller from '../../molecules/DiceRoller/DiceRoller';
 import QuestionDisplay from '../../molecules/QuestionDisplay/QuestionDisplay';
-import LoadingIndicator from '../../atoms/LoadingIndicator/LoadingIndicator';
 import { getRandomQuestion, QuestionError } from '../../../utils/getRandomQuestion';
 import { CATEGORIES } from '../../../constants/categories';
 import { THEME_COLORS } from '../../../constants/colors';
+import { triggerRollStart, triggerRollLand, triggerError } from '../../../utils/haptics';
 
-const GameScreenOrganism: React.FC<{ style?: React.CSSProperties; onDiceTap: () => void }> = ({ style, onDiceTap }) => {
+interface GameProps {
+  style?: ViewStyle;
+  onDiceTap: () => void;
+}
+
+const GameScreenOrganism: React.FC<GameProps> = ({ style, onDiceTap }) => {
   const [diceValue, setDiceValue] = useState<number>(0);
   const [currentQuestion, setCurrentQuestion] = useState<{ text: string; category: string } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -18,18 +23,26 @@ const GameScreenOrganism: React.FC<{ style?: React.CSSProperties; onDiceTap: () 
     setIsLoading(true);
     setDiceValue(value);
 
+    // Trigger roll start haptic vibration
+    triggerRollStart();
+
     setTimeout(() => {
       try {
         const question = getRandomQuestion(value);
         const categoryKeys = Object.keys(CATEGORIES);
         const categoryIndex = (value - 1) % categoryKeys.length;
         const category = categoryKeys[categoryIndex];
-        
+
         setCurrentQuestion({
           text: question.text,
-          category: category
+          category: category,
         });
+
+        // Trigger landing double-pulse haptic vibration
+        triggerRollLand();
       } catch (err) {
+        // Trigger error triple vibration
+        triggerError();
         setError(err instanceof QuestionError ? err.message : 'An unexpected error occurred');
         setCurrentQuestion(null);
       } finally {
@@ -42,20 +55,19 @@ const GameScreenOrganism: React.FC<{ style?: React.CSSProperties; onDiceTap: () 
   };
 
   return (
-    <View style={[styles.container, style as any]}>
+    <View style={[styles.container, style]}>
       <View style={styles.content}>
         <View style={styles.questionSection}>
-          {isLoading ? (
-            <LoadingIndicator />
-          ) : error ? (
+          {error ? (
             <Text style={styles.errorText}>{error}</Text>
-          ) : (
-            <QuestionDisplay 
+          ) : (diceValue > 0 || isLoading) ? (
+            <QuestionDisplay
               question={currentQuestion?.text || null}
               category={currentQuestion?.category}
+              isRolling={isLoading}
               style={styles.questionCard}
             />
-          )}
+          ) : null}
         </View>
         <View style={styles.diceSection}>
           <DiceRoller onRoll={handleRoll} value={diceValue} />
@@ -80,6 +92,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '100%',
     paddingTop: 40,
+    zIndex: 1,
   },
   questionSection: {
     flex: 2,
@@ -87,6 +100,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 20,
+    zIndex: 5,
   },
   questionCard: {
     width: '100%',
