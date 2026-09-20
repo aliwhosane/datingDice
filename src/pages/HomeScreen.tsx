@@ -1,5 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, StyleSheet, Animated, Easing, TextInput, Pressable, Keyboard } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Animated,
+  Easing,
+  TextInput,
+  Pressable,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Button from '../components/atoms/Button/Button';
 import { THEME_COLORS } from '../constants/colors';
@@ -16,6 +27,7 @@ const HomeScreen: React.FC = () => {
   const slideAnim = useRef(new Animated.Value(40)).current;
   const pulseAnim = useRef(new Animated.Value(1)).current;
   const nameInputsAnim = useRef(new Animated.Value(0)).current;
+  const player2Ref = useRef<TextInput>(null);
 
   useEffect(() => {
     // Staggered entry animation
@@ -72,6 +84,7 @@ const HomeScreen: React.FC = () => {
 
   const handleStartGame = () => {
     triggerTap();
+    Keyboard.dismiss();
     const playerNames = playMode === 'turns' ? [player1.trim(), player2.trim()] : undefined;
     navigation.navigate('Game' as never, { playerNames } as never);
   };
@@ -107,6 +120,17 @@ const HomeScreen: React.FC = () => {
         ]}
       />
 
+      {/* Tapping anywhere outside the inputs dismisses the keyboard */}
+      <Pressable
+        style={StyleSheet.absoluteFill}
+        onPress={Keyboard.dismiss}
+        accessible={false}
+      />
+
+      <KeyboardAvoidingView
+        style={styles.keyboardAvoider}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      >
       <Animated.View
         style={[
           styles.contentWrapper,
@@ -173,8 +197,12 @@ const HomeScreen: React.FC = () => {
             onChangeText={setPlayer1}
             maxLength={15}
             autoCorrect={false}
+            returnKeyType="next"
+            onSubmitEditing={() => player2Ref.current?.focus()}
+            blurOnSubmit={false}
           />
           <TextInput
+            ref={player2Ref}
             style={styles.input}
             placeholder="Player 2 Name"
             placeholderTextColor={THEME_COLORS.textSecondary}
@@ -182,6 +210,8 @@ const HomeScreen: React.FC = () => {
             onChangeText={setPlayer2}
             maxLength={15}
             autoCorrect={false}
+            returnKeyType="done"
+            onSubmitEditing={Keyboard.dismiss}
           />
         </Animated.View>
 
@@ -193,6 +223,7 @@ const HomeScreen: React.FC = () => {
           />
         </View>
       </Animated.View>
+      </KeyboardAvoidingView>
     </View>
   );
 };
@@ -222,6 +253,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#B8A3E3', // Soft lavender glow
     bottom: '10%',
     right: '-20%',
+  },
+  keyboardAvoider: {
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   contentWrapper: {
     width: '90%',
